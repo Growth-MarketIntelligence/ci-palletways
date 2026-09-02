@@ -1,3 +1,9 @@
+# Run strategy collection
+
+set PYTHONPATH=. && .\venv\Scripts\python.exe scripts/run_strategy_collection.py
+
+
+
 # Palletways Competitive Intelligence Platform - Architecture
 
 ## Overview
@@ -10,6 +16,74 @@ This document outlines the foundational structure and the core components built 
 - **Frontend:** Next.js, React, TailwindCSS, TypeScript.
 - **Database:** PostgreSQL (local).
 - **AI/LLM:** Google GenAI (Gemini) for data extraction and synthesis.
+
+---
+
+## End-to-End Architecture & Workflow
+
+```mermaid
+graph TD
+    %% Define Styles
+    classDef frontend fill:#0ea5e9,stroke:#0284c7,stroke-width:2px,color:#fff;
+    classDef api fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff;
+    classDef services fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff;
+    classDef data fill:#6366f1,stroke:#4f46e5,stroke-width:2px,color:#fff;
+    classDef external fill:#64748b,stroke:#475569,stroke-width:2px,color:#fff;
+
+    %% External Sources
+    subgraph External_Sources["External Sources"]
+        Websites["Competitor Websites"]:::external
+        News["News & RSS Feeds"]:::external
+        LLM["Google GenAI API"]:::external
+    end
+
+    %% Data Pipeline (Services)
+    subgraph Data_Pipeline["Backend - Data Pipeline"]
+        Crawler["Crawler / Collector"]:::services
+        Extractor["AI Extractor"]:::services
+        StrategyEngine["Strategy Engine"]:::services
+        
+        Crawler -->|Fetches raw HTML/XML| Websites
+        Crawler -->|Fetches Feeds| News
+        Crawler -->|Saves Raw Documents| DB_Docs[("Raw Documents")]:::data
+        
+        DB_Docs -->|Feeds Text to| Extractor
+        Extractor <-->|Prompts for Event Extraction| LLM
+        Extractor -->|Saves Extracted Events| DB_Events[("Events & Evidence")]:::data
+        
+        DB_Events -->|Feeds Events to| StrategyEngine
+        StrategyEngine <-->|Prompts for Synthesis| LLM
+        StrategyEngine -->|Saves Strategic Insights| DB_Insights[("Strategy Insights")]:::data
+    end
+
+    %% Database
+    subgraph Database["PostgreSQL Database"]
+        DB_Docs
+        DB_Events
+        DB_Insights
+        DB_Core[("Core Entities: Competitors, Markets, Topics")]:::data
+    end
+
+    %% API Layer
+    subgraph API_Layer["Backend - FastAPI"]
+        NetworkAPI["Network API Router"]:::api
+        StrategyAPI["Strategy API Router"]:::api
+        
+        DB_Events -.->|Queried by| NetworkAPI
+        DB_Insights -.->|Queried by| StrategyAPI
+        DB_Core -.->|Queried by| NetworkAPI
+        DB_Core -.->|Queried by| StrategyAPI
+    end
+
+    %% Frontend Shell
+    subgraph Frontend["Frontend - Next.js Shell"]
+        UI_Network["Network UI /network"]:::frontend
+        UI_Strategy["Strategy UI /strategy"]:::frontend
+        
+        NetworkAPI -->|JSON Response| UI_Network
+        StrategyAPI -->|JSON Response| UI_Strategy
+    end
+```
 
 ---
 
