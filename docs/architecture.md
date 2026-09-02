@@ -1,9 +1,3 @@
-# Run strategy collection
-
-set PYTHONPATH=. && .\venv\Scripts\python.exe scripts/run_strategy_collection.py
-
-
-
 # Palletways Competitive Intelligence Platform - Architecture
 
 ## Overview
