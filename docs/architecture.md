@@ -21,68 +21,794 @@ This document outlines the foundational structure and the core components built 
 
 ## End-to-End Architecture & Workflow
 
-```mermaid
-graph TD
-    %% Define Styles
-    classDef frontend fill:#0ea5e9,stroke:#0284c7,stroke-width:2px,color:#fff;
-    classDef api fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff;
-    classDef services fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff;
-    classDef data fill:#6366f1,stroke:#4f46e5,stroke-width:2px,color:#fff;
-    classDef external fill:#64748b,stroke:#475569,stroke-width:2px,color:#fff;
+```text
+                              PALLETWAYS CI PLATFORM
 
-    %% External Sources
-    subgraph External_Sources["External Sources"]
-        Websites["Competitor Websites"]:::external
-        News["News & RSS Feeds"]:::external
-        LLM["Google GenAI API"]:::external
-    end
+                                       │
 
-    %% Data Pipeline (Services)
-    subgraph Data_Pipeline["Backend - Data Pipeline"]
-        Crawler["Crawler / Collector"]:::services
-        Extractor["AI Extractor"]:::services
-        StrategyEngine["Strategy Engine"]:::services
-        
-        Crawler -->|Fetches raw HTML/XML| Websites
-        Crawler -->|Fetches Feeds| News
-        Crawler -->|Saves Raw Documents| DB_Docs[("Raw Documents")]:::data
-        
-        DB_Docs -->|Feeds Text to| Extractor
-        Extractor <-->|Prompts for Event Extraction| LLM
-        Extractor -->|Saves Extracted Events| DB_Events[("Events & Evidence")]:::data
-        
-        DB_Events -->|Feeds Events to| StrategyEngine
-        StrategyEngine <-->|Prompts for Synthesis| LLM
-        StrategyEngine -->|Saves Strategic Insights| DB_Insights[("Strategy Insights")]:::data
-    end
+             ┌─────────────────────────┴─────────────────────────┐
 
-    %% Database
-    subgraph Database["PostgreSQL Database"]
-        DB_Docs
-        DB_Events
-        DB_Insights
-        DB_Core[("Core Entities: Competitors, Markets, Topics")]:::data
-    end
+             │                                                   │
 
-    %% API Layer
-    subgraph API_Layer["Backend - FastAPI"]
-        NetworkAPI["Network API Router"]:::api
-        StrategyAPI["Strategy API Router"]:::api
-        
-        DB_Events -.->|Queried by| NetworkAPI
-        DB_Insights -.->|Queried by| StrategyAPI
-        DB_Core -.->|Queried by| NetworkAPI
-        DB_Core -.->|Queried by| StrategyAPI
-    end
+             ▼                                                   ▼
 
-    %% Frontend Shell
-    subgraph Frontend["Frontend - Next.js Shell"]
-        UI_Network["Network UI /network"]:::frontend
-        UI_Strategy["Strategy UI /strategy"]:::frontend
-        
-        NetworkAPI -->|JSON Response| UI_Network
-        StrategyAPI -->|JSON Response| UI_Strategy
-    end
+      EXTERNAL INTELLIGENCE                              INTERNAL / USER INPUT
+
+             │                                                   │
+
+             │                                      ┌────────────┴───────────┐
+
+             │                                      │                        │
+
+             │                                      ▼                        ▼
+
+             │                              User Questions            Job / Hiring Data
+
+             │                              Documents                  User Feedback
+
+             │                              Search Queries             Analyst Input
+
+             │
+
+             ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                         COMPETITOR SOURCE LAYER                              │
+
+│                                                                              │
+
+│  Competitor Websites      Newsrooms         Press Releases                  │
+
+│  Investor Relations       Annual Reports    RSS / Atom                      │
+
+│  Sitemaps                 Blogs             Careers / Jobs                   │
+
+│  Regulatory Sources       Industry Sources  Reports / PDFs                  │
+
+│  APIs / Feeds (future)    Social / Reviews (future)                         │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                         DISCOVERY ENGINE                                     │
+
+│                                                                              │
+
+│  Topic-Aware Discovery                                                       │
+
+│                                                                              │
+
+│  ├── URL scoring                                                             │
+
+│  ├── Anchor-text scoring                                                     │
+
+│  ├── Referrer-context scoring                                                │
+
+│  ├── Sitemap discovery                                                       │
+
+│  ├── RSS / Atom discovery                                                    │
+
+│  ├── Recency scoring                                                         │
+
+│  ├── Topic vocabulary                                                        │
+
+│  ├── Domain restriction                                                      │
+
+│  └── Priority queue                                                          │
+
+│                                                                              │
+
+│  Each intelligence topic can have its own discovery vocabulary.             │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                           TARGETED CRAWLER                                   │
+
+│                                                                              │
+
+│  robots.txt validation                                                      │
+
+│  Domain restriction                                                         │
+
+│  Crawl depth control                                                        │
+
+│  Page limits                                                                │
+
+│  Priority queue                                                             │
+
+│  URL normalization                                                           │
+
+│  Duplicate URL prevention                                                    │
+
+│  HTTP failure handling                                                       │
+
+│  Retry / backoff                                                             │
+
+│  Change detection                                                           │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                              COLLECTOR                                       │
+
+│                                                                              │
+
+│  httpx                                                                      │
+
+│  BeautifulSoup                                                              │
+
+│  Readability / boilerplate removal                                          │
+
+│  Main-content extraction                                                    │
+
+│  Title extraction                                                           │
+
+│  Date extraction                                                            │
+
+│  Metadata extraction                                                        │
+
+│  Content hashing                                                            │
+
+│  Deduplication                                                              │
+
+│  Encoding / null-byte sanitization                                          │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                           DOCUMENT STORE                                     │
+
+│                              PostgreSQL                                      │
+
+│                                                                              │
+
+│  Document                                                                   │
+
+│  ├── URL                                                                     │
+
+│  ├── Source                                                                  │
+
+│  ├── Competitor                                                              │
+
+│  ├── Raw provenance                                                          │
+
+│  ├── Clean content                                                           │
+
+│  ├── Content hash                                                            │
+
+│  ├── Published date                                                          │
+
+│  ├── Updated date                                                            │
+
+│  └── Collected date                                                          │
+
+│                                                                              │
+
+│  Evidence-first provenance foundation                                       │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                ┌──────────────────┼────────────────────┐
+
+                │                  │                    │
+
+                ▼                  ▼                    ▼
+
+┌──────────────────────┐ ┌──────────────────────┐ ┌────────────────────────┐
+
+│ NETWORK & GEOGRAPHY  │ │ STRATEGY & MARKET    │ │ FUTURE INTELLIGENCE    │
+
+│      LAYER           │ │ POSITIONING LAYER    │ │       TOPICS            │
+
+│                      │ │                      │ │                        │
+
+│ Existing Phase 1    │ │ Existing Phase 2    │ │ Technology             │
+
+│                      │ │                      │ │ Pricing                │
+
+│ Network Expansion   │ │ Direct Strategy      │ │ Customers              │
+
+│ Infrastructure      │ │ Events               │ │ Financial              │
+
+│ Contraction         │ │                      │ │ Sustainability         │
+
+│ Commercial          │ │ Strategy Synthesis   │ │ Leadership             │
+
+│ Innovation           │ │                      │ │ Risk & Regulation      │
+
+└──────────┬───────────┘ └──────────┬───────────┘ └───────────┬────────────┘
+
+           │                        │                         │
+
+           ▼                        ▼                         ▼
+
+      ┌──────────┐             ┌──────────┐              ┌──────────┐
+
+      │ Evidence │             │ Evidence │              │ Evidence │
+
+      └────┬─────┘             └────┬─────┘              └────┬─────┘
+
+           │                        │                         │
+
+           ▼                        ▼                         ▼
+
+      Network Events          Strategy Events             Topic Events
+
+           │                        │                         │
+
+           └────────────────────────┼─────────────────────────┘
+
+                                    │
+
+                                    ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                         INTELLIGENCE EVENT STORE                              │
+
+│                                                                              │
+
+│  Event                                                                       │
+
+│  ├── event_type                                                              │
+
+│  ├── event_subtype                                                           │
+
+│  ├── event_metadata JSONB                                                    │
+
+│  ├── competitor_id                                                           │
+
+│  ├── evidence_id                                                             │
+
+│  ├── event_date                                                              │
+
+│  ├── impact                                                                   │
+
+│  ├── threat_level                                                            │
+
+│  └── recommended_watch                                                       │
+
+│                                                                              │
+
+│  Evidence → Event lineage preserved                                          │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+             ┌─────────────────────┼────────────────────────┐
+
+             │                     │                        │
+
+             ▼                     ▼                        ▼
+
+┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────────┐
+
+│ SIGNAL ENGINE        │ │ PATTERN ENGINE       │ │ TREND ENGINE             │
+
+│                      │ │                      │ │                          │
+
+│ Event significance   │ │ Multi-event patterns │ │ Time-series trends      │
+
+│ Competitor signals   │ │ Repeated behaviour   │ │ Strategic patterns   │
+
+│ Alerts               │ │ Strategic patterns   │ │ Activity velocity       │
+
+│ Risk indicators      │ │ Correlations         │ │ Emerging themes         │
+
+└──────────┬───────────┘ └──────────┬───────────┘ └────────────┬─────────────┘
+
+           │                        │                           │
+
+           └────────────────────────┼───────────────────────────┘
+
+                                    │
+
+                                    ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                      STRATEGY SYNTHESIS ENGINE                               │
+
+│                                                                              │
+
+│  Phase 2 Strategy & Market Positioning                                      │
+
+│                                                                              │
+
+│  Inputs:                                                                     │
+
+│  ├── Direct Strategy Events                                                  │
+
+│  ├── Network & Geography Events                                              │
+
+│  ├── Signals                                                                 │
+
+│  ├── Patterns                                                                │
+
+│  └── Trends                                                                  │
+
+│                                                                              │
+
+│  Outputs:                                                                    │
+
+│  ├── Assessment                                                               │
+
+│  ├── Interpretation                                                          │
+
+│  ├── Impact                                                                   │
+
+│  ├── Threat Level                                                             │
+
+│  └── Recommended Watch                                                       │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                         KNOWLEDGE LAYER                                      │
+
+│                                                                              │
+
+│                       ┌─────────────────────┐                                │
+
+│                       │ KNOWLEDGE INGESTION │                                │
+
+│                       └──────────┬──────────┘                                │
+
+│                                  │                                           │
+
+│          ┌───────────────────────┼────────────────────────┐                  │
+
+│          │                       │                        │                  │
+
+│          ▼                       ▼                        ▼                  │
+
+│     Documents                Events                   Evidence               │
+
+│     Reports                 Signals                  Insights               │
+
+│     PDFs                    Strategy                 Jobs                   │
+
+│          │                       │                        │                  │
+
+│          └───────────────────────┼────────────────────────┘                  │
+
+│                                  ▼                                           │
+
+│                         Chunking / Cleaning                                  │
+
+│                                  │                                           │
+
+│                                  ▼                                           │
+
+│                         Embedding Generation                                 │
+
+│                                  │                                           │
+
+│                                  ▼                                           │
+
+│                       Vector / Semantic Index                                │
+
+│                                  │                                           │
+
+│                         ┌────────┴────────┐                                  │
+
+│                         │                 │                                  │
+
+│                         ▼                 ▼                                  │
+
+│                   Semantic Search      Metadata                             │
+
+│                                      Filtering                              │
+
+└───────────────────────────────┬──────────────────────────────────────────────┘
+
+                                │
+
+                                ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                         RAG INTELLIGENCE LAYER                               │
+
+│                                                                              │
+
+│                         Query Processing                                     │
+
+│                              │                                               │
+
+│                              ▼                                               │
+
+│                     Query Understanding                                      │
+
+│                              │                                               │
+
+│               ┌──────────────┼──────────────┐                               │
+
+│               │              │              │                                │
+
+│               ▼              ▼              ▼                                │
+
+│          Keyword Search   Semantic Search  Metadata Filter                   │
+
+│               │              │              │                                │
+
+│               └──────────────┼──────────────┘                               │
+
+│                              ▼                                               │
+
+│                         Hybrid Retrieval                                     │
+
+│                              │                                               │
+
+│                              ▼                                               │
+
+│                           Re-ranking                                         │
+
+│                              │                                               │
+
+│                              ▼                                               │
+
+│                       Evidence Assembly                                      │
+
+│                              │                                               │
+
+│                              ▼                                               │
+
+│                        Context Builder                                       │
+
+│                              │                                               │
+
+│                              ▼                                               │
+
+│                          Groq LLM                                             │
+
+│                              │                                               │
+
+│                              ▼                                               │
+
+│                     Grounded AI Response                                     │
+
+│                                                                              │
+
+│  Rule: RAG answers must be grounded in retrieved evidence.                  │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                              ASK AI                                          │
+
+│                                                                              │
+
+│  User Question                                                              │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Intent Detection                                                            │
+
+│       │                                                                      │
+
+│       ├── Competitor Question                                                │
+
+│       ├── Network Question                                                   │
+
+│       ├── Strategy Question                                                  │
+
+│       ├── Pricing Question                                                   │
+
+│       ├── Technology Question                                                │
+
+│       ├── Customer Question                                                  │
+
+│       ├── Trend Question                                                     │
+
+│       ├── Comparison Question                                                │
+
+│       └── Executive Question                                                 │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  RAG Retrieval                                                               │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Evidence Validation                                                         │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Groq Reasoning                                                              │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Answer + Sources + Confidence + Evidence                                    │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+             ┌─────────────────────┼──────────────────────────┐
+
+             │                     │                          │
+
+             ▼                     ▼                          ▼
+
+┌──────────────────────┐ ┌──────────────────────┐ ┌──────────────────────────┐
+
+│ JOB INTELLIGENCE     │ │ ML / ANALYTICS       │ │ COMPETITOR PROFILING     │
+
+│                      │ │ ENGINE               │ │                          │
+
+│ Careers pages        │ │                      │ │ Competitor profiles      │
+
+│ Job postings         │ │ Classification       │ │ Capability maps          │
+
+│ Hiring velocity      │ │ Clustering           │ │ Strategy profiles        │
+
+│ New roles            │ │ Anomaly detection    │ │ Network footprint        │
+
+│ Skill demand         │ │ Trend prediction     │ │ Technology profile       │
+
+│ Leadership hiring    │ │ Similarity           │ │ Commercial profile       │
+
+│ Technology hiring    │ │ Topic modelling      │ │                          │
+
+└──────────┬───────────┘ └──────────┬───────────┘ └────────────┬─────────────┘
+
+           │                        │                           │
+
+           └────────────────────────┼───────────────────────────┘
+
+                                    │
+
+                                    ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                         ML INTELLIGENCE LAYER                                │
+
+│                                                                              │
+
+│  Training Data                                                               │
+
+│       ▲                                                                      │
+
+│       │                                                                      │
+
+│  Historical Events + Documents + Evidence + Analyst Labels                  │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Feature Engineering                                                        │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Model Training                                                             │
+
+│       │                                                                      │
+
+│       ├── Event Classification                                               │
+
+│       ├── Topic Classification                                               │
+
+│       ├── Competitor Clustering                                              │
+
+│       ├── Anomaly Detection                                                  │
+
+│       ├── Trend Detection                                                    │
+
+│       └── Similarity / Ranking                                               │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Model Evaluation                                                            │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Model Registry / Versioning                                                 │
+
+│       │                                                                      │
+
+│       ▼                                                                      │
+
+│  Production Inference                                                        │
+
+│                                                                              │
+
+│  IMPORTANT: ML outputs augment intelligence; they do not replace            │
+
+│  evidence-backed extraction.                                                │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                       EXECUTIVE INTELLIGENCE LAYER                           │
+
+│                                                                              │
+
+│                         EXECUTIVE COCKPIT                                    │
+
+│                                                                              │
+
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐                    │
+
+│  │ Competitor     │ │ Strategic      │ │ Network        │                    │
+
+│  │ Overview       │ │ Moves          │ │ Changes        │                    │
+
+│  └────────────────┘ └────────────────┘ └────────────────┘                    │
+
+│                                                                              │
+
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐                    │
+
+│  │ Threat Radar   │ │ Market Trends  │ │ Emerging      │                    │
+
+│  │                │ │                │ │ Risks          │                    │
+
+│  └────────────────┘ └────────────────┘ └────────────────┘                    │
+
+│                                                                              │
+
+│  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐                    │
+
+│  │ Opportunities  │ │ Recommended    │ │ Executive      │                    │
+
+│  │                │ │ Watch          │ │ Briefing       │                    │
+
+│  └────────────────┘ └────────────────┘ └────────────────┘                    │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                         ALERTS & BRIEFINGS                                   │
+
+│                                                                              │
+
+│  High-threat event                                                          │
+
+│  Major competitor move                                                      │
+
+│  Network member loss                                                        │
+
+│  New hub / infrastructure investment                                        │
+
+│  Strategic acquisition                                                      │
+
+│  Major technology launch                                                    │
+
+│  Leadership change                                                          │
+
+│  Significant hiring trend                                                   │
+
+│  Emerging market trend                                                      │
+
+│                                                                              │
+
+│  ├── Real-time / event alerts                                               │
+
+│  ├── Daily intelligence digest                                              │
+
+│  ├── Weekly competitor briefing                                             │
+
+│  └── Executive strategic briefing                                           │
+
+└──────────────────────────────────┬───────────────────────────────────────────┘
+
+                                   │
+
+                                   ▼
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+
+│                          NEXT.JS FRONTEND                                    │
+
+│                                                                              │
+
+│  Dashboard                                                                   │
+
+│  │                                                                           │
+
+│  ├── Executive Competitive Cockpit                                          │
+
+│  ├── Network & Geography Intelligence                                       │
+
+│  ├── Strategy & Market Positioning                                           │
+
+│  ├── Services & Proposition                                                 │
+
+│  ├── Pricing & Commercial                                                    │
+
+│  ├── Customers & Verticals                                                   │
+
+│  ├── Technology & Automation                                                 │
+
+│  ├── M&A & Partnerships                                                      │
+
+│  ├── Financial & Investment                                                  │
+
+│  ├── Sustainability & Fleet                                                  │
+
+│  ├── Leadership & Talent                                                     │
+
+│  ├── Brand & Customer Sentiment                                              │
+
+│  ├── Risk & Regulation                                                       │
+
+│  ├── Job Intelligence                                                        │
+
+│  ├── Competitor Profiles                                                      │
+
+│  ├── Market Trends                                                            │
+
+│  ├── Alerts                                                                   │
+
+│  └── Ask AI                                                                  │
+
+│                                                                              │
+
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
