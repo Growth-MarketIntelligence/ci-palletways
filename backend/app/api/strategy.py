@@ -35,10 +35,16 @@ def get_strategy_insights(
             if ev and ev.evidence and ev.evidence.document and ev.evidence.document.source:
                 url = ev.evidence.document.source.url
                 source_name = ev.evidence.document.source.name
+            
             supporting_events.append({
                 "id": str(ev.id) if ev else str(se.event_id),
                 "url": url,
-                "source_name": source_name
+                "source_name": source_name,
+                "description": ev.description if ev else None,
+                "event_type": ev.event_type if ev else None,
+                "event_subtype": ev.event_subtype if ev else None,
+                "location": ev.location if ev else None,
+                "event_date": ev.event_date.isoformat() if ev and ev.event_date else None
             })
         
         response.append({
@@ -77,10 +83,16 @@ def get_strategy_profile(competitor_id: str, db: Session = Depends(get_db)):
             if ev and ev.evidence and ev.evidence.document and ev.evidence.document.source:
                 url = ev.evidence.document.source.url
                 source_name = ev.evidence.document.source.name
+            
             supporting_events.append({
                 "id": str(ev.id) if ev else str(se.event_id),
                 "url": url,
-                "source_name": source_name
+                "source_name": source_name,
+                "description": ev.description if ev else None,
+                "event_type": ev.event_type if ev else None,
+                "event_subtype": ev.event_subtype if ev else None,
+                "location": ev.location if ev else None,
+                "event_date": ev.event_date.isoformat() if ev and ev.event_date else None
             })
             
         grouped_insights[insight.strategy_category].append({

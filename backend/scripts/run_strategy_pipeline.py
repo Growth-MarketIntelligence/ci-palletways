@@ -21,13 +21,11 @@ def main():
             print(f"\nCompetitor: {comp.canonical_name}")
             
             strat_events = db.query(Event).filter(Event.competitor_id == comp.id, Event.topic_id == strategy_topic.id).count() if strategy_topic else 0
-            net_events = db.query(Event).filter(Event.competitor_id == comp.id, Event.topic_id == network_topic.id).count() if network_topic else 0
             
-            print(f"Direct Strategy Events: {strat_events}")
-            print(f"Network Context Events: {net_events}")
+            print(f"Strategy Events available: {strat_events}")
             
-            if strat_events == 0 and net_events == 0:
-                print("No events available for strategy synthesis.")
+            if strat_events == 0:
+                print("No strategy events available for synthesis.")
                 continue
                 
             try:

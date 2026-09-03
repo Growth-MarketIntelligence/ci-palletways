@@ -1,10 +1,16 @@
 from app.core.database import SessionLocal
-from app.models import Event, Evidence, Signal, Document, CollectionRun
+from app.models import Event, Evidence, Signal, Document, CollectionRun, StrategyInsight, StrategyInsightEvent
 
 def clean_database():
     db = SessionLocal()
     try:
         # Delete generated intelligence and collection data
+        print(f"Deleting {db.query(StrategyInsightEvent).count()} StrategyInsightEvents...")
+        db.query(StrategyInsightEvent).delete()
+        
+        print(f"Deleting {db.query(StrategyInsight).count()} StrategyInsights...")
+        db.query(StrategyInsight).delete()
+        
         print(f"Deleting {db.query(Signal).count()} Signals...")
         db.query(Signal).delete()
         

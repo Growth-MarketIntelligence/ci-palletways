@@ -113,10 +113,19 @@ def get_network_signals(db: Session = Depends(get_db)):
     
     response = []
     for sig, comp in results:
-        # Get linked events
-        events = db.query(Event).join(
+        # Get linked events and their source docs
+        events_with_docs = db.query(Event, Document).join(
             SignalEvent, Event.id == SignalEvent.event_id
+        ).outerjoin(
+            Evidence, Event.evidence_id == Evidence.id
+        ).outerjoin(
+            Document, Evidence.document_id == Document.id
         ).filter(SignalEvent.signal_id == sig.id).all()
+        
+        citations = []
+        for evt, doc in events_with_docs:
+            if doc and doc.url and doc.url not in citations:
+                citations.append(doc.url)
         
         response.append({
             "id": sig.id,
@@ -124,7 +133,8 @@ def get_network_signals(db: Session = Depends(get_db)):
             "summary": sig.description,
             "competitor_name": comp.canonical_name,
             "generated_at": sig.detected_at,
-            "event_count": len(events)
+            "event_count": len(events_with_docs),
+            "citations": citations
         })
         
     return response

@@ -7,6 +7,11 @@ type SupportingEvent = {
   id: string;
   url: string | null;
   source_name: string | null;
+  description: string | null;
+  event_type: string | null;
+  event_subtype: string | null;
+  location: string | null;
+  event_date: string | null;
 };
 
 type StrategyInsight = {
@@ -54,26 +59,26 @@ export default function StrategyPage() {
   // Helper to map category to color theme
   const getCategoryTheme = (category: string) => {
     switch(category) {
-      case "NETWORK_STRATEGY": return "from-blue-500 to-cyan-500 text-blue-300 bg-blue-500/10 border-blue-500/30";
-      case "INFRASTRUCTURE_STRATEGY": return "from-orange-500 to-amber-500 text-orange-300 bg-orange-500/10 border-orange-500/30";
-      case "COMMERCIAL_STRATEGY": return "from-emerald-500 to-green-500 text-emerald-300 bg-emerald-500/10 border-emerald-500/30";
-      case "TECHNOLOGY_STRATEGY": return "from-purple-500 to-fuchsia-500 text-purple-300 bg-purple-500/10 border-purple-500/30";
-      case "GEOGRAPHIC_MARKET_EXPANSION": return "from-pink-500 to-rose-500 text-pink-300 bg-pink-500/10 border-pink-500/30";
-      case "COMPETITIVE_POSITIONING": return "from-red-500 to-rose-600 text-red-300 bg-red-500/10 border-red-500/30";
-      case "OPERATIONAL_POSITIONING": return "from-indigo-500 to-blue-600 text-indigo-300 bg-indigo-500/10 border-indigo-500/30";
-      default: return "from-gray-500 to-zinc-500 text-gray-300 bg-gray-500/10 border-gray-500/30";
+      case "NETWORK_STRATEGY": return "from-blue-500 to-cyan-500 text-blue-700 bg-blue-50 border-blue-200";
+      case "INFRASTRUCTURE_STRATEGY": return "from-orange-500 to-amber-500 text-orange-700 bg-orange-50 border-orange-200";
+      case "COMMERCIAL_STRATEGY": return "from-emerald-500 to-green-500 text-emerald-700 bg-emerald-50 border-emerald-200";
+      case "TECHNOLOGY_STRATEGY": return "from-purple-500 to-fuchsia-500 text-purple-700 bg-purple-50 border-purple-200";
+      case "GEOGRAPHIC_MARKET_EXPANSION": return "from-pink-500 to-rose-500 text-pink-700 bg-pink-50 border-pink-200";
+      case "COMPETITIVE_POSITIONING": return "from-red-500 to-rose-600 text-red-700 bg-red-50 border-red-200";
+      case "OPERATIONAL_POSITIONING": return "from-indigo-500 to-blue-600 text-indigo-700 bg-indigo-50 border-indigo-200";
+      default: return "from-gray-500 to-zinc-500 text-gray-700 bg-gray-50 border-gray-200";
     }
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-900 via-zinc-950 to-black text-gray-200 font-sans selection:bg-orange-500/30">
+    <div className="min-h-screen bg-gray-50 bg-gradient-to-b from-gray-50 via-gray-100 to-white text-gray-800 font-sans selection:bg-orange-200">
       <main className="p-8 max-w-[1600px] mx-auto space-y-8">
         
         {/* Header Section */}
-        <header className="flex flex-col md:flex-row justify-between items-center bg-orange-900/20 border border-orange-500/20 p-5 rounded-2xl shadow-lg">
+        <header className="flex flex-col md:flex-row justify-between items-center bg-white border border-gray-200 p-5 rounded-2xl shadow-lg">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-              <span className="p-2 bg-orange-500/20 rounded-lg text-orange-400">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
+              <span className="p-2 bg-orange-100 rounded-lg text-orange-600">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
               </span>
               Strategy & Market Positioning
@@ -81,7 +86,7 @@ export default function StrategyPage() {
           </div>
           <Link 
             href="/" 
-            className="px-5 py-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 transition-all text-sm font-medium flex items-center gap-2"
+            className="px-5 py-2 rounded-md bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all text-sm font-medium flex items-center gap-2 text-gray-700"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Back to Home
@@ -95,8 +100,8 @@ export default function StrategyPage() {
           <div className="lg:col-span-3 flex flex-col gap-6">
             
             {/* Competitor Filter */}
-            <section className="bg-orange-900/10 border border-orange-500/20 rounded-xl p-5 shadow-lg">
-              <h2 className="text-lg font-semibold text-white mb-4 border-b border-white/10 pb-2">Competitor Analysis</h2>
+            <section className="bg-white border border-gray-200 rounded-xl p-5 shadow-lg">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b border-gray-100 pb-2">Competitor Analysis</h2>
               <div className="flex flex-col gap-2">
                 {competitors.map((comp) => (
                   <button 
@@ -105,7 +110,7 @@ export default function StrategyPage() {
                     className={`px-4 py-2 text-left rounded-md text-sm font-medium transition-all ${
                       selectedCompetitor === comp 
                       ? 'bg-orange-600 text-white shadow-md' 
-                      : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                      : 'bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                     }`}
                   >
                     {comp}
@@ -115,12 +120,12 @@ export default function StrategyPage() {
             </section>
 
             {/* Context Box */}
-            <section className="bg-orange-900/10 border border-orange-500/20 rounded-xl p-5 shadow-lg flex-1">
-              <h3 className="font-semibold text-white mb-2">Phase 2 Intelligence Layer</h3>
-              <p className="text-sm text-gray-400 leading-relaxed mb-4">
+            <section className="bg-orange-50 border border-orange-200 rounded-xl p-5 shadow-sm flex-1">
+              <h3 className="font-semibold text-gray-900 mb-2">Phase 2 Intelligence Layer</h3>
+              <p className="text-sm text-gray-600 leading-relaxed mb-4">
                 This dashboard synthesizes strategic meaning from the raw events captured in the Network Intelligence layer.
               </p>
-              <div className="p-3 bg-black/40 rounded-lg border border-white/5 text-xs text-gray-500">
+              <div className="p-3 bg-white rounded-lg border border-orange-100 text-xs text-gray-600">
                 AI interprets the events to identify patterns such as structural expansion, commercial pivots, or capability shifts.
               </div>
             </section>
@@ -139,8 +144,8 @@ export default function StrategyPage() {
                 Synthesizing Intelligence...
               </div>
             ) : filteredInsights.length === 0 ? (
-              <div className="flex flex-col h-64 items-center justify-center text-gray-500 bg-white/5 rounded-2xl border border-white/5">
-                <svg className="w-12 h-12 mb-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <div className="flex flex-col h-64 items-center justify-center text-gray-500 bg-white rounded-2xl border border-gray-200">
+                <svg className="w-12 h-12 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <p>No strategic insights found for {selectedCompetitor}.</p>
               </div>
             ) : (
@@ -150,39 +155,39 @@ export default function StrategyPage() {
                   const confidencePct = Math.round(insight.confidence * 100);
                   
                   return (
-                    <div key={insight.id} className="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-2xl hover:border-white/20 transition-all duration-300 group">
+                    <div key={insight.id} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-xl hover:border-gray-300 transition-all duration-300 group">
                       
                       {/* Card Header */}
                       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
                         <div>
                           <div className="flex items-center gap-3 mb-2">
-                            <h2 className="text-2xl font-bold text-white">{insight.competitor_name}</h2>
+                            <h2 className="text-2xl font-bold text-gray-900">{insight.competitor_name}</h2>
                             <span className={`px-3 py-1 text-xs font-bold rounded-full border ${themeClasses}`}>
                               {insight.strategy_category.replace(/_/g, " ")}
                             </span>
                           </div>
-                          <h3 className="text-lg text-gray-300 font-medium">
+                          <h3 className="text-lg text-gray-700 font-medium">
                             {insight.strategy_theme}
                           </h3>
                         </div>
                         
                         {/* Confidence Gauge */}
-                        <div className="flex flex-col items-end shrink-0 bg-white/5 p-3 rounded-xl border border-white/5">
+                        <div className="flex flex-col items-end shrink-0 bg-gray-50 p-3 rounded-xl border border-gray-200">
                           <span className="text-xs text-gray-500 uppercase tracking-wider mb-1 font-semibold">AI Confidence</span>
                           <div className="flex items-center gap-3">
-                            <div className="w-24 h-2 bg-gray-800 rounded-full overflow-hidden">
+                            <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
                               <div 
                                 className={`h-full bg-gradient-to-r ${themeClasses.split(' ').find(c => c.startsWith('from-'))} ${themeClasses.split(' ').find(c => c.startsWith('to-'))}`} 
                                 style={{ width: `${confidencePct}%` }}
                               ></div>
                             </div>
-                            <span className="text-sm font-bold text-white">{confidencePct}%</span>
+                            <span className="text-sm font-bold text-gray-900">{confidencePct}%</span>
                           </div>
                         </div>
                       </div>
 
                       {/* Card Body (Assessment & Interpretation) */}
-                      <div className="grid md:grid-cols-2 gap-6 bg-white/[0.02] p-5 rounded-xl border border-white/5">
+                      <div className="grid md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded-xl border border-gray-200">
                         
                         {/* Assessment */}
                         <div>
@@ -190,48 +195,65 @@ export default function StrategyPage() {
                             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                             Factual Assessment
                           </h4>
-                          <p className="text-gray-300 text-sm leading-relaxed">
+                          <p className="text-gray-700 text-sm leading-relaxed">
                             {insight.assessment}
                           </p>
                         </div>
 
                         {/* Interpretation */}
                         <div className="relative">
-                          <div className="absolute -left-3 top-0 bottom-0 w-px bg-white/10 hidden md:block"></div>
-                          <h4 className="text-xs font-bold text-orange-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                          <div className="absolute -left-3 top-0 bottom-0 w-px bg-gray-200 hidden md:block"></div>
+                          <h4 className="text-xs font-bold text-orange-600 uppercase tracking-wider mb-2 flex items-center gap-2">
                             <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                             Strategic Interpretation
                           </h4>
-                          <p className="text-white font-medium text-sm leading-relaxed">
+                          <p className="text-gray-900 font-medium text-sm leading-relaxed">
                             {insight.interpretation}
                           </p>
                         </div>
                       </div>
 
                       {/* Footer: Supporting Events count and Sources */}
-                      <div className="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
-                        <div className="flex flex-col gap-3">
-                          <div className="text-xs text-gray-500 flex items-center gap-2">
-                            <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                            Derived from <strong>{insight.supporting_events.length}</strong> validated operational event{insight.supporting_events.length !== 1 ? 's' : ''}
+                      <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4">
+                        <div className="flex flex-col gap-3 w-full">
+                          <div className="flex items-center justify-between w-full mb-1">
+                            <div className="text-xs text-gray-500 flex items-center gap-2">
+                              <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                              Derived from <strong>{insight.supporting_events.length}</strong> validated strategy event{insight.supporting_events.length !== 1 ? 's' : ''}
+                            </div>
+                            <div className="text-xs font-mono text-gray-500">
+                              {new Date(insight.generated_at || insight.created_at || Date.now()).toLocaleDateString()}
+                            </div>
                           </div>
                           
-                          {/* Source Tags */}
-                          {insight.supporting_events.some(ev => ev.url) && (
-                            <div className="flex gap-2 flex-wrap max-w-xl">
-                              {insight.supporting_events.map(ev => (
-                                ev.url ? (
-                                  <a key={ev.id} href={ev.url} target="_blank" rel="noopener noreferrer" className="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-1 rounded hover:bg-blue-500/20 transition-colors flex items-center gap-1">
-                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                                    {ev.source_name || "Source"}
-                                  </a>
-                                ) : null
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-xs font-mono text-gray-600 self-end mb-1">
-                          {new Date(insight.generated_at || insight.created_at || Date.now()).toLocaleDateString()}
+                          {/* Raw Events List */}
+                          <div className="flex flex-col gap-3">
+                            {insight.supporting_events.map((ev) => (
+                              <div key={ev.id} className="bg-gray-50 border border-gray-200 p-3.5 rounded-lg flex flex-col gap-2">
+                                <div className="flex justify-between items-start gap-4">
+                                  <div className="flex flex-wrap gap-2 items-center">
+                                    <span className="text-xs font-semibold text-gray-700 bg-white px-2 py-0.5 rounded border border-gray-200">
+                                      {ev.event_type?.replace(/_/g, " ")}
+                                    </span>
+                                    {ev.event_subtype && <span className="text-[11px] text-gray-500">{ev.event_subtype}</span>}
+                                  </div>
+                                  {ev.url && (
+                                    <a href={ev.url} target="_blank" rel="noopener noreferrer" className="text-[10px] font-medium bg-blue-50 text-blue-600 border border-blue-200 px-2 py-1 rounded hover:bg-blue-100 transition-colors flex items-center gap-1 shrink-0">
+                                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                      {ev.source_name || "Source"}
+                                    </a>
+                                  )}
+                                </div>
+                                <p className="text-sm text-gray-600 italic">"{ev.description}"</p>
+                                {(ev.location || ev.event_date) && (
+                                  <div className="flex gap-4 text-[11px] text-gray-500 font-mono mt-1">
+                                    {ev.location && <span className="flex items-center gap-1">📍 {ev.location}</span>}
+                                    {ev.event_date && <span className="flex items-center gap-1">📅 {ev.event_date}</span>}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
 

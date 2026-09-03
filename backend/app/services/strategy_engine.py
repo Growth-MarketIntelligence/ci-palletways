@@ -32,15 +32,10 @@ def synthesize_competitor_strategy(db: Session, competitor_id: str, start_date: 
     # Step 1: Retrieve Events
     from app.models import IntelligenceTopic
     strategy_topic = db.query(IntelligenceTopic).filter_by(code="STRATEGY_MP").first()
-    network_topic = db.query(IntelligenceTopic).filter_by(code="NETWORK_GEOGRAPHIC_EXPANSION").first()
     
-    topic_ids = []
-    if strategy_topic: topic_ids.append(strategy_topic.id)
-    if network_topic: topic_ids.append(network_topic.id)
-
     query = db.query(Event).filter(Event.competitor_id == competitor_id)
-    if topic_ids:
-        query = query.filter(Event.topic_id.in_(topic_ids))
+    if strategy_topic:
+        query = query.filter(Event.topic_id == strategy_topic.id)
         
     if start_date:
         query = query.filter(cast(Event.event_date, Date) >= start_date)
@@ -58,7 +53,7 @@ def synthesize_competitor_strategy(db: Session, competitor_id: str, start_date: 
     # Step 3: Build Lean Input
     lean_events = []
     for e in events:
-        source_type = "DIRECT STRATEGY" if (strategy_topic and e.topic_id == strategy_topic.id) else "CONTEXTUAL NETWORK"
+        source_type = "DIRECT STRATEGY"
         evt_dict = {
             "id": str(e.id),
             "source_type": source_type,
